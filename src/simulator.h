@@ -28,8 +28,6 @@ class BlockchainNetwork {
 public:
     int N; // N denotes the total node count in the network
     std::vector<Node> node; //contains the nodes of the network
-
-
     void generate(int); //generates the initial graph & initializes genesis block
     void simulate(int); //simulates the network
 

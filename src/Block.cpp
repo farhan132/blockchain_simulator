@@ -4,7 +4,6 @@ Block::Block(long long _hash, int _positionAtLedger, Block *_previousBlock) {
     positionAtLedger = _positionAtLedger;
     previousBlock = _previousBlock;
 }
-
 long long Block::getBlockHash() {
     return blockHash;
 }
