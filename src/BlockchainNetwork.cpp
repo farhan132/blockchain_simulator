@@ -4,6 +4,7 @@
 #include <stack>
 #include <set>
 using namespace std;
+
 mt19937 rng(68);
 void BlockchainNetwork::generate(int n) {
     N = n;
@@ -11,7 +12,7 @@ void BlockchainNetwork::generate(int n) {
         node.push_back(Node(300 + rng() % 201));
     }
 
-    genesisBlock = new Block(rng(), 1, NULL);
+    genesisBlock = new Block(++totalBlockCount, 1, NULL);
     for(int i = 1; i <= n; i++) {
         for(int j = 1; j <= n; j++) {
             if(i == j) continue;
@@ -24,7 +25,7 @@ void BlockchainNetwork::generate(int n) {
 }
 
 void BlockchainNetwork::simulate(int Mx_T) {
-    const int W = 50;
+    const int W = 200;
     const int Mx_Base = 502;
 
     stack < int > st[Mx_Base];
@@ -83,7 +84,7 @@ void BlockchainNetwork::simulate(int Mx_T) {
             if(!Block_up){
                 int P = rng() % 70;
                 if(P == 0){
-                    Block *new_block = new Block(rng(), node[x].getLatestBlock()->getPositionAtLedger() + 1, node[x].getLatestBlock());
+                    Block *new_block = new Block(++totalBlockCount, node[x].getLatestBlock()->getPositionAtLedger() + 1, node[x].getLatestBlock());
                     node[x].setLatestBlock(new_block);
                     Block_up = 1;
                     print_solved(x, new_block->getBlockHash());
@@ -109,10 +110,10 @@ void BlockchainNetwork::simulate(int Mx_T) {
 
 
 void BlockchainNetwork::print_solved(int i, long long id){
-    cout << "Mined a new block: " << i <<" with id = "<<id<< endl; 
+    // cout << "Mined a new block: " << i <<" with id = "<<id<< endl; 
 }
 void BlockchainNetwork::print_pool_update(int i, int j){
-    cout << "Ledger Update: " << i << " (from " << j << " )" << endl;
+    // cout << "Ledger Update: " << i << " (from " << j << " )" << endl;
 }
 void BlockchainNetwork::print_fork(int x, int sz){
     cout << "Fork (size: " << sz << "): " << x << endl; 
