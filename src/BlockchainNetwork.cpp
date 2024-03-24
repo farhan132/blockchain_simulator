@@ -25,47 +25,44 @@ void BlockchainNetwork::generate(int n) {
 }
 
 void BlockchainNetwork::simulate(int Mx_T) {
-    const int W = 200;
+    const int W = 240;
     const int Mx_Base = 502;
 
     stack < int > st[Mx_Base];
-    stack < int > pool[N + 1];
 
-    long long nxt[N + 1];
-
-    for(int i = 1; i <= N; i++){
-        st[node[i].base].push(i);
-        nxt[i] = node[i].base;
+    for(int i = 1; i <= N; i++) {
+        int firstMine = node[i].randomBlockMineTime(rng());
+        st[firstMine].push(i);
+        node[i].nextProcessTime = firstMine;
         node[i].setLatestBlock(genesisBlock);
     }
 
-    for(int _T = 0; _T <= Mx_T; _T++){
+    for(int _T = 0; _T <= Mx_T; _T++) {
         int T = _T % Mx_Base;
 
-        while(st[T].size()){
+        while(st[T].size()) {
             int x = st[T].top(); st[T].pop();
 
-            if(_T ^ nxt[x]) continue;
-
+            if(_T != node[x].nextProcessTime) continue; 
             bool Block_up = 0;
             int par = x;
 
-            if(pool[x].size()){
+            if(node[x].pool.size()) {
                 set < pair<int,int> > ST;
-                auto cur = node[pool[x].top()].getLatestBlock(); 
-                par = pool[x].top();
-                ST.insert({node[pool[x].top()].getLatestBlock()->getBlockHash(), node[pool[x].top()].getLatestBlock()->getPositionAtLedger()});
-                pool[x].pop();
-                while(pool[x].size()){
-                    auto cont = node[pool[x].top()].getLatestBlock(); 
-                    ST.insert({node[pool[x].top()].getLatestBlock()->getPositionAtLedger(), node[pool[x].top()].getLatestBlock()->getPositionAtLedger()});
-                    if(cur->getPositionAtLedger() < cont->getPositionAtLedger()){
+                auto cur = node[x].pool.top(); //this will denote the block with highest ledger length
+                ST.insert({cur->getBlockHash(), cur->getPositionAtLedger()});
+                node[x].pool.pop();
+                while(node[x].pool.size()) {
+                    auto cont = node[x].pool.top(); 
+                    ST.insert({cont->getPositionAtLedger(), cont->getPositionAtLedger()});
+                    if(cur->getPositionAtLedger() < cont->getPositionAtLedger()) {
                         cur = cont;
-                        par = pool[x].top();
                     }
-                    pool[x].pop();
+                    node[x].pool.pop();
                 }
+
                 if(ST.size() > 1) {
+                    //Currently pool contains multiple new block requests
                     print_fork(x, (int)ST.size());
                     int cid = 0;
                     for(auto [p, q] : ST) {
@@ -73,7 +70,7 @@ void BlockchainNetwork::simulate(int Mx_T) {
                     }
                 }
 
-                if(cur->getPositionAtLedger() > node[x].getLatestBlock()->getPositionAtLedger()){
+                if(cur->getPositionAtLedger() > node[x].getLatestBlock()->getPositionAtLedger()) {
                     node[x].setLatestBlock(cur);
                     Block_up = 1;
                     print_pool_update(x, par);
@@ -81,9 +78,10 @@ void BlockchainNetwork::simulate(int Mx_T) {
             }
 
 
-            if(!Block_up){
+            if(!Block_up) {
                 int P = rng() % 70;
-                if(P == 0){
+                if(P == 0) {
+                    //mining a new block
                     Block *new_block = new Block(++totalBlockCount, node[x].getLatestBlock()->getPositionAtLedger() + 1, node[x].getLatestBlock());
                     node[x].setLatestBlock(new_block);
                     Block_up = 1;
@@ -91,19 +89,22 @@ void BlockchainNetwork::simulate(int Mx_T) {
                 }
             }
 
-            if(Block_up){
-                for(auto u : node[x].adj){
-                    if(node[x].getLatestBlock() == node[u].getLatestBlock()){
+            if(Block_up) {
+                //if a new block was mined by node x
+                for(auto u : node[x].adj) {
+                    if(node[x].getLatestBlock() == node[u].getLatestBlock()) {
                         continue;
                     }
-
-                    nxt[u] = _T + W;
-                    pool[u].push(par);
+                    node[u].nextProcessTime = (_T + W);
+                    node[u].pool.push(node[x].getLatestBlock());
                     st[(T + W) % Mx_Base].push(u);
                 }
             }
-            st[(T + node[x].base) % Mx_Base].push(x);
-            nxt[x] = _T + node[x].base;
+            
+            int nextMine = node[x].randomBlockMineTime(rng());
+
+            st[(T + nextMine) % Mx_Base].push(x);
+            node[x].nextProcessTime = _T + nextMine;
         }
     }
 }

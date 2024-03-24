@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#include <stack>
 class Block {
 public:
     Block(long long, int, Block*);
@@ -17,6 +18,8 @@ private:
 class Node {
 public:
     std::vector<int> adj;
+    std::stack<Block*> pool; //contains the block requests of neighbor nodes
+    long long nextProcessTime; //denotes the next time this node is supposed to mine a block
     int base; //in the current implementation, it denotes the computational capacity of the node
     Node(int);
     Block *getLatestBlock();
@@ -39,6 +42,8 @@ public:
     void print_solved(int, long long);
     void print_pool_update(int, int);
     void print_fork(int, int);
+    
+
 private:
     Block *genesisBlock;
 };
