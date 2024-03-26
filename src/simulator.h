@@ -37,7 +37,7 @@ public:
     std::vector<Node> node; //contains the nodes of the network
     void generate(int); //generates the initial graph & initializes genesis block
     void simulate(int); //simulates the network
-
+    void addNode();
     //Following functions are used for printing the network status while simulation
     void print_solved(int, long long);
     void print_pool_update(int, int);

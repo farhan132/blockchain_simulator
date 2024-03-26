@@ -24,6 +24,23 @@ void BlockchainNetwork::generate(int n) {
     }
 }
 
+void BlockchainNetwork::addNode() {
+    N++;
+    node.push_back(Node(300 + rng() % 201));
+
+    for(int i = 1; i < N; i++) {
+        int d1 = rng() % 100;
+        int d2 = rng() % 100;
+        if(d1 < 25) {
+            node[i].adj.push_back(N);
+        }
+        if(d2 < 25) {
+            node[N].adj.push_back(i);
+        }
+    }
+    node[N].setLatestBlock(node[node[N].adj[0]].getLatestBlock());
+}
+
 void BlockchainNetwork::simulate(int Mx_T) {
     const int W = 240;
     const int Mx_Base = 502;
@@ -40,6 +57,15 @@ void BlockchainNetwork::simulate(int Mx_T) {
     for(int _T = 0; _T <= Mx_T; _T++) {
         int T = _T % Mx_Base;
 
+        if(rng() % 1000 == 0) {
+            cout << "One new node joined the network." << endl;
+            addNode();
+            cout << "Now node count = " << node.size() << endl;
+            int nextMine = node[N].randomBlockMineTime(rng() % 100);
+            st[(T + nextMine) % Mx_Base].push(N);
+            node[N].nextProcessTime = _T + nextMine;
+        }
+        
         while(st[T].size()) {
             int x = st[T].top(); st[T].pop();
 
