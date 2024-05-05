@@ -41,6 +41,8 @@ void BlockchainNetwork::addNode() {
     node[N].setLatestBlock(node[node[N].adj[0]].getLatestBlock());
 }
 
+// Mx_T = Simulating untill Mx_T unit time
+
 void BlockchainNetwork::simulate(int Mx_T) {
     const int W = 240;
     const int Mx_Base = 502;

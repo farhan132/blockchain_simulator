@@ -1,7 +1,8 @@
 #include "simulator.h"
 using namespace std;
-Node::Node(int b) {
+Node::Node(int b, int d) {
     base = b;
+    difficulty = d;
 }
 
 Block *Node::getLatestBlock() {

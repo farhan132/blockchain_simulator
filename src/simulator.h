@@ -8,6 +8,7 @@ public:
     Block *getPreviousBlock();
     long long getBlockHash();
     int getPositionAtLedger();
+
 private:
     long long blockHash = 0; 
     int positionAtLedger;
@@ -25,6 +26,9 @@ public:
     Block *getLatestBlock();
     void setLatestBlock(Block*);
     int randomBlockMineTime(long long); //returns a random amount of time the node might take to mine next block
+    long long lastDifficultyUpdateTime = 0;
+    long long difficulty;
+
 private:
     Block* latestBlock;
 
