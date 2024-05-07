@@ -9,7 +9,7 @@ mt19937 rng(68);
 void BlockchainNetwork::generate(int n) {
     N = n;
     for(int i = 0; i <= n; i++) {
-        node.push_back(Node(300 + rng() % 201));
+        node.push_back(Node(300 + rng() % 201, this, i));
     }
 
     genesisBlock = new Block(++totalBlockCount, 1, NULL);
@@ -26,7 +26,7 @@ void BlockchainNetwork::generate(int n) {
 
 void BlockchainNetwork::addNode() {
     N++;
-    node.push_back(Node(300 + rng() % 201));
+    node.push_back(Node(300 + rng() % 201, this, N));
 
     for(int i = 1; i < N; i++) {
         int d1 = rng() % 100;
@@ -45,25 +45,29 @@ void BlockchainNetwork::addNode() {
 
 void BlockchainNetwork::simulate(int Mx_T) {
     const int W = 240;
-    const int Mx_Base = 502;
+    const int Mx_Base = 50002;
 
     stack < int > st[Mx_Base];
 
     for(int i = 1; i <= N; i++) {
-        int firstMine = node[i].randomBlockMineTime(rng());
+        int firstMine = node[i].randomBlockMineTime();
         st[firstMine].push(i);
         node[i].nextProcessTime = firstMine;
         node[i].setLatestBlock(genesisBlock);
     }
 
     for(int _T = 0; _T <= Mx_T; _T++) {
+
+        curTime = _T;
+
         int T = _T % Mx_Base;
 
         if(rng() % 1000 == 0) {
             cout << "One new node joined the network." << endl;
             addNode();
             cout << "Now node count = " << node.size() << endl;
-            int nextMine = node[N].randomBlockMineTime(rng() % 100);
+            int nextMine = node[N].randomBlockMineTime();
+            nextMine = min(nextMine, Mx_Base - 1);
             st[(T + nextMine) % Mx_Base].push(N);
             node[N].nextProcessTime = _T + nextMine;
         }
@@ -72,6 +76,8 @@ void BlockchainNetwork::simulate(int Mx_T) {
             int x = st[T].top(); st[T].pop();
 
             if(_T != node[x].nextProcessTime) continue; 
+            
+            cout << "Current difficulty for node  "<< x << " : " << node[x].difficulty << "\n";
             bool Block_up = 0;
             int par = x;
 
@@ -129,7 +135,8 @@ void BlockchainNetwork::simulate(int Mx_T) {
                 }
             }
             
-            int nextMine = node[x].randomBlockMineTime(rng());
+            int nextMine = node[x].randomBlockMineTime();
+            nextMine = min(nextMine, Mx_Base - 1);
 
             st[(T + nextMine) % Mx_Base].push(x);
             node[x].nextProcessTime = _T + nextMine;
@@ -145,7 +152,7 @@ void BlockchainNetwork::print_pool_update(int i, int j){
     // cout << "Ledger Update: " << i << " (from " << j << " )" << endl;
 }
 void BlockchainNetwork::print_fork(int x, int sz){
-    cout << "Fork (size: " << sz << "): " << x << endl; 
+    // cout << "Fork (size: " << sz << "): " << x << endl; 
 }
 
 

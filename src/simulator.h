@@ -1,6 +1,10 @@
 #include <vector>
 #include <string>
 #include <stack>
+#include <random>
+class BlockchainNetwork;
+
+
 class Block {
 public:
     Block(long long, int, Block*);
@@ -16,22 +20,23 @@ private:
 
 };
 
+
 class Node {
 public:
+    BlockchainNetwork* bcNetwork;
     std::vector<int> adj;
     std::stack<Block*> pool; //contains the block requests of neighbor nodes
     long long nextProcessTime; //denotes the next time this node is supposed to mine a block
-    int base; //in the current implementation, it denotes the computational capacity of the node
-    Node(int);
+    long long base; //in the current implementation, it denotes the computational capacity of the node
+    Node(int, BlockchainNetwork*, long long);
     Block *getLatestBlock();
     void setLatestBlock(Block*);
-    int randomBlockMineTime(long long); //returns a random amount of time the node might take to mine next block
+    long long randomBlockMineTime(); //returns a random amount of time the node might take to mine next block
     long long lastDifficultyUpdateTime = 0;
     long long difficulty;
-
 private:
     Block* latestBlock;
-
+    std::mt19937 rndEngine;
 };
 
 class BlockchainNetwork {
@@ -46,6 +51,11 @@ public:
     void print_solved(int, long long);
     void print_pool_update(int, int);
     void print_fork(int, int);
+
+    int difficultyUpdateInterval = 3; //denotes how often we update the difficulty of the nodes; its value x means we update after x, 2x, 3x, .. -th blocks are created
+
+    long long expectedMineTime = 500;
+    long long curTime; // denotes the current time in the simulator
     
 
 private:
