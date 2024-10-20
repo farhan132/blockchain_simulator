@@ -1,10 +1,10 @@
-SRCS := $(shell find -name '*cpp')
+SRCS := $(shell find . -name '*cpp')
 BUILD_DIR := ../build
 OBJSTMP := $(SRCS:%=$(BUILD_DIR)/%)
 OBJS := $(OBJSTMP:.cpp=.o)
 
 $(BUILD_DIR)/main: $(OBJS)
-	g++ $(OBJS) -o main
+	g++ -std=c++17 $(OBJS) -o main
 $(BUILD_DIR)/%.o: %.cpp
 	g++ -c $< -o $@
 .PHONY: clean

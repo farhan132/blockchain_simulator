@@ -84,11 +84,11 @@ void BlockchainNetwork::simulate(int Mx_T) {
             if(node[x].pool.size()) {
                 set < pair<int,int> > ST;
                 auto cur = node[x].pool.top(); //this will denote the block with highest ledger length
-                ST.insert({cur->getBlockHash(), cur->getPositionAtLedger()});
+                ST.insert(make_pair(cur->getBlockHash(), cur->getPositionAtLedger()));
                 node[x].pool.pop();
                 while(node[x].pool.size()) {
                     auto cont = node[x].pool.top(); 
-                    ST.insert({cont->getPositionAtLedger(), cont->getPositionAtLedger()});
+                    ST.insert(make_pair(cont->getPositionAtLedger(), cont->getPositionAtLedger()));
                     if(cur->getPositionAtLedger() < cont->getPositionAtLedger()) {
                         cur = cont;
                     }
