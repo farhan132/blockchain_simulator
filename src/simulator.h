@@ -33,6 +33,7 @@ public:
     void setLatestBlock(Block*);
     long long randomBlockMineTime(); //returns a random amount of time the node might take to mine next block
     long long lastDifficultyUpdateTime = 0;
+    long long lastUpdatedBlockPosition = 1; 
     long long difficulty;
 private:
     Block* latestBlock;

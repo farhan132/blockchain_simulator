@@ -14,14 +14,16 @@ Block *Node::getLatestBlock() {
 
 void Node::setLatestBlock(Block *block) {
     latestBlock = block;
-    if(block->getPositionAtLedger() % bcNetwork-> difficultyUpdateInterval == 0) {
+    if(block->getPositionAtLedger() - lastUpdatedBlockPosition > bcNetwork-> difficultyUpdateInterval) {
         long double takenTime = bcNetwork-> curTime - lastDifficultyUpdateTime;
-        long double shouldTake = bcNetwork-> expectedMineTime * bcNetwork-> difficultyUpdateInterval;
+        long double shouldTake = bcNetwork-> expectedMineTime * (block->getPositionAtLedger() - lastUpdatedBlockPosition); 
 
         cout << "From " << difficulty << " ";
         difficulty = ceil((shouldTake / takenTime) * difficulty);
 
         lastDifficultyUpdateTime = bcNetwork-> curTime;
+        lastUpdatedBlockPosition = block->getPositionAtLedger();
+
         cout << "Difficulty updated to " << difficulty << "---- " << takenTime << " " << shouldTake << endl;; "\n";
         if(difficulty == 0) {
             cout << "ERRORRRRR" << " " << takenTime << " " << shouldTake << endl;;
