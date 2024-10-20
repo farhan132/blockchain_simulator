@@ -77,7 +77,7 @@ void BlockchainNetwork::simulate(int Mx_T) {
 
             if(_T != node[x].nextProcessTime) continue; 
             
-            cout << "Current difficulty for node  "<< x << " : " << node[x].difficulty << "\n";
+            // cout << "Current difficulty for node  "<< x << " : " << node[x].difficulty << " at T = " << _T << " " << node[x].pool.size() << "\n";
             bool Block_up = 0;
             int par = x;
 
@@ -99,9 +99,9 @@ void BlockchainNetwork::simulate(int Mx_T) {
                     //Currently pool contains multiple new block requests
                     print_fork(x, (int)ST.size());
                     int cid = 0;
-                    for(auto [p, q] : ST) {
-                        cout << "Chain "<< ++cid << " length = " << q << endl;
-                    }
+                    // for(auto [p, q] : ST) {
+                    //     cout << "Chain "<< ++cid << " length = " << q << endl;
+                    
                 }
 
                 if(cur->getPositionAtLedger() > node[x].getLatestBlock()->getPositionAtLedger()) {
@@ -136,11 +136,17 @@ void BlockchainNetwork::simulate(int Mx_T) {
             }
             
             int nextMine = node[x].randomBlockMineTime();
+            // cout << nextMine << " here got for "<< x << " " << 1.00 * node[x].base / node[x].difficulty << endl;
             nextMine = min(nextMine, Mx_Base - 1);
 
             st[(T + nextMine) % Mx_Base].push(x);
             node[x].nextProcessTime = _T + nextMine;
         }
+    }
+
+
+    for(int i = 0; i < node.size(); i++) {
+        cout << "Node " << i << "expected time: " << 1.000 * node[i].difficulty / node[i].base << " ---- "<< node[i].difficulty << endl;
     }
 }
 

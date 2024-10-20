@@ -52,7 +52,7 @@ public:
     void print_pool_update(int, int);
     void print_fork(int, int);
 
-    int difficultyUpdateInterval = 3; //denotes how often we update the difficulty of the nodes; its value x means we update after x, 2x, 3x, .. -th blocks are created
+    int difficultyUpdateInterval = 30; //denotes how often we update the difficulty of the nodes; its value x means we update after x, 2x, 3x, .. -th blocks are created
 
     long long expectedMineTime = 500;
     long long curTime; // denotes the current time in the simulator

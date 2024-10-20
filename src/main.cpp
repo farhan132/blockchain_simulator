@@ -4,7 +4,7 @@ using namespace std;
 int main() {
     BlockchainNetwork BN;
     BN.generate(10);
-    BN.simulate(1000);
+    BN.simulate(1000000);
     log_writer lw(&BN);
     lw.printLedger("../Logs/log.txt");
 }
