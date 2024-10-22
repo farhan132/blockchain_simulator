@@ -55,7 +55,7 @@ void BlockchainNetwork::simulate(int Mx_T) {
         node[i].nextProcessTime = firstMine;
         node[i].setLatestBlock(genesisBlock);
     }
-
+   
     for(int _T = 0; _T <= Mx_T; _T++) {
 
         curTime = _T;
@@ -63,21 +63,23 @@ void BlockchainNetwork::simulate(int Mx_T) {
         int T = _T % Mx_Base;
 
         if(rng() % 1000 == 0) {
-            cout << "One new node joined the network." << endl;
+            //cout << "One new node joined the network." << endl;
             addNode();
-            cout << "Now node count = " << node.size() << endl;
+            //cout << "Now node count = " << node.size() << endl;
             int nextMine = node[N].randomBlockMineTime();
             nextMine = min(nextMine, Mx_Base - 1);
             st[(T + nextMine) % Mx_Base].push(N);
             node[N].nextProcessTime = _T + nextMine;
+            node[N].nextMineTime = _T + nextMine;
         }
+        
+
         
         while(st[T].size()) {
             int x = st[T].top(); st[T].pop();
 
             if(_T != node[x].nextProcessTime) continue; 
-            
-            // cout << "Current difficulty for node  "<< x << " : " << node[x].difficulty << " at T = " << _T << " " << node[x].pool.size() << "\n";
+       
             bool Block_up = 0;
             int par = x;
 
@@ -112,15 +114,12 @@ void BlockchainNetwork::simulate(int Mx_T) {
             }
 
 
-            if(!Block_up) {
-                int P = rng() % 70;
-                if(P == 0) {
-                    //mining a new block
-                    Block *new_block = new Block(++totalBlockCount, node[x].getLatestBlock()->getPositionAtLedger() + 1, node[x].getLatestBlock());
-                    node[x].setLatestBlock(new_block);
-                    Block_up = 1;
-                    print_solved(x, new_block->getBlockHash());
-                }
+            if(!Block_up && _T == node[x].nextMineTime) {
+                //mining a new block
+                Block *new_block = new Block(++totalBlockCount, node[x].getLatestBlock()->getPositionAtLedger() + 1, node[x].getLatestBlock());
+                node[x].setLatestBlock(new_block);
+                Block_up = 1;
+                print_solved(x, new_block->getBlockHash());
             }
 
             if(Block_up) {
@@ -136,17 +135,14 @@ void BlockchainNetwork::simulate(int Mx_T) {
             }
             
             int nextMine = node[x].randomBlockMineTime();
+        
             // cout << nextMine << " here got for "<< x << " " << 1.00 * node[x].base / node[x].difficulty << endl;
             nextMine = min(nextMine, Mx_Base - 1);
 
             st[(T + nextMine) % Mx_Base].push(x);
             node[x].nextProcessTime = _T + nextMine;
+            node[x].nextMineTime = _T + nextMine;
         }
-    }
-
-
-    for(int i = 0; i < node.size(); i++) {
-        cout << "Node " << i << "expected time: " << 1.000 * node[i].difficulty / node[i].base << " ---- "<< node[i].difficulty << endl;
     }
 }
 

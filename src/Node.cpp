@@ -6,6 +6,7 @@ Node::Node(int b, BlockchainNetwork* bcn, long long sd) {
     difficulty = 700000;
     bcNetwork = bcn;
     rndEngine.seed(sd);
+    id = sd;
 }
 
 Block *Node::getLatestBlock() {
@@ -14,17 +15,20 @@ Block *Node::getLatestBlock() {
 
 void Node::setLatestBlock(Block *block) {
     latestBlock = block;
+    if(rndEngine() % 10000 == 0) {
+        cout << "Current average time to mine block in network: " << 1.0 *  bcNetwork-> curTime / block->getPositionAtLedger() << endl;
+    }
     if(block->getPositionAtLedger() - lastUpdatedBlockPosition > bcNetwork-> difficultyUpdateInterval) {
         long double takenTime = bcNetwork-> curTime - lastDifficultyUpdateTime;
         long double shouldTake = bcNetwork-> expectedMineTime * (block->getPositionAtLedger() - lastUpdatedBlockPosition); 
 
-        cout << "From " << difficulty << " ";
+
+        // cout <<id << " => From " << 1.00 * difficulty/base << " ";
         difficulty = ceil((shouldTake / takenTime) * difficulty);
 
         lastDifficultyUpdateTime = bcNetwork-> curTime;
         lastUpdatedBlockPosition = block->getPositionAtLedger();
-
-        cout << "Difficulty updated to " << difficulty << "---- " << takenTime << " " << shouldTake << endl;; "\n";
+        // cout << "Difficulty updated to " << 1.00 * difficulty/base << "---- " << takenTime << " " << shouldTake << endl;; 
         if(difficulty == 0) {
             cout << "ERRORRRRR" << " " << takenTime << " " << shouldTake << endl;;
             exit(0);

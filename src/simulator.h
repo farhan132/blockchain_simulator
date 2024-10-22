@@ -27,6 +27,7 @@ public:
     std::vector<int> adj;
     std::stack<Block*> pool; //contains the block requests of neighbor nodes
     long long nextProcessTime; //denotes the next time this node is supposed to mine a block
+    long long nextMineTime = 0;
     long long base; //in the current implementation, it denotes the computational capacity of the node
     Node(int, BlockchainNetwork*, long long);
     Block *getLatestBlock();
@@ -35,6 +36,7 @@ public:
     long long lastDifficultyUpdateTime = 0;
     long long lastUpdatedBlockPosition = 1; 
     long long difficulty;
+    int id;
 private:
     Block* latestBlock;
     std::mt19937 rndEngine;
@@ -55,7 +57,7 @@ public:
 
     int difficultyUpdateInterval = 30; //denotes how often we update the difficulty of the nodes; its value x means we update after x, 2x, 3x, .. -th blocks are created
 
-    long long expectedMineTime = 500;
+    long long expectedMineTime = 1000;
     long long curTime; // denotes the current time in the simulator
     
 
