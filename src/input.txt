@@ -1,0 +1,5 @@
+initial_node_count: 1000
+simulation_time: 2000000 
+expected_mine_rate: 1000
+difficulty_update_interval: 50
+new_node_arrival_rate: 1000

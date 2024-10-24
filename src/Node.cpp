@@ -17,24 +17,17 @@ Block *Node::getLatestBlock() {
 
 void Node::setLatestBlock(Block *block) {
     latestBlock = block;
-    if(rndEngine() % 10000 == 0) {
+    if(rndEngine() % 5000 == 0) {
         cout << "Current average time to mine block in network: " << 1.0 *  bcNetwork-> curTime / block->getPositionAtLedger() << endl;
     }
     if(block->getPositionAtLedger() - lastUpdatedBlockPosition > bcNetwork-> difficultyUpdateInterval) {
         long double takenTime = bcNetwork-> curTime - lastDifficultyUpdateTime;
         long double shouldTake = bcNetwork-> expectedMineTime * (block->getPositionAtLedger() - lastUpdatedBlockPosition); 
 
-
-        // cout <<id << " => From " << 1.00 * difficulty/base << " ";
         difficulty = ceil((shouldTake / takenTime) * difficulty);
-        if(difficulty == 0) {
-            cout << "ERRORRRRR" << " " << takenTime << " " << shouldTake << endl;;
-            exit(0);
-        }
-
+       
         lastDifficultyUpdateTime = bcNetwork-> curTime;
         lastUpdatedBlockPosition = block->getPositionAtLedger();
-        // cout << "Difficulty updated to " << 1.00 * difficulty/base << "---- " << takenTime << " " << shouldTake << endl;; 
         
     }
 }

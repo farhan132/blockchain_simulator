@@ -51,16 +51,11 @@ public:
     std::vector<Node> node; //contains the nodes of the network
     void generate(int); //generates the initial graph & initializes genesis block
     void simulate(int); //simulates the network
-    void addNode();
-    //Following functions are used for printing the network status while simulation
-    void print_solved(int, long long);
-    void print_pool_update(int, int);
-    void print_fork(int, int);
-
-    int difficultyUpdateInterval = 50; //denotes how often we update the difficulty of the nodes; its value x means we update after x, 2x, 3x, .. -th blocks are created
-
-    long long expectedMineTime = 1000;
+    void addNode(); //adds a node to the network
+    int difficultyUpdateInterval; //denotes how often we update the difficulty of the nodes; its value x means we update after x, 2x, 3x, .. -th blocks are created
+    long long expectedMineTime;
     long long curTime; // denotes the current time in the simulator
+    int newNodeArrivalRate;
     static const int max_size = 50000;
     std::stack<int> st[max_size];
 

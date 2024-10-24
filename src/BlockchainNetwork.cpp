@@ -71,7 +71,7 @@ void BlockchainNetwork::simulate(int Mx_T) {
 
         int T = _T % max_size;
 
-        if(rng() % 1000 == 0) {
+        if(rng() % newNodeArrivalRate == 0) {
             addNode();
             processMine(N, _T);
         }
@@ -101,7 +101,6 @@ void BlockchainNetwork::simulate(int Mx_T) {
                 if(max_diff_block->getPositionAtLedger() > node[x].getLatestBlock()->getPositionAtLedger()) {
                     node[x].setLatestBlock(max_diff_block);
                     block_updated = true;
-                    print_pool_update(x, par);
                 }
             }
 
@@ -127,17 +126,6 @@ void BlockchainNetwork::simulate(int Mx_T) {
             processMine(x, _T);
         }
     }
-}
-
-
-void BlockchainNetwork::print_solved(int i, long long id){
-    // cout << "Mined a new block: " << i <<" with id = "<<id<< endl; 
-}
-void BlockchainNetwork::print_pool_update(int i, int j){
-    // cout << "Ledger Update: " << i << " (from " << j << " )" << endl;
-}
-void BlockchainNetwork::print_fork(int x, int sz){
-    // cout << "Fork (size: " << sz << "): " << x << endl; 
 }
 
 
