@@ -1,12 +1,15 @@
 #include "simulator.h"
-Block::Block(long long _hash, int _positionAtLedger, Block *_previousBlock) {
+Block::Block(long long _hash, int _positionAtLedger, long long totDifficulty, Block *_previousBlock) {
     blockHash = _hash;
     positionAtLedger = _positionAtLedger;
     previousBlock = _previousBlock;
-    ttt = 69;
+    cumulativeDifficulty = totDifficulty;
 }
 long long Block::getBlockHash() {
     return blockHash;
+}
+long long Block::getCumulativeDifficulty() {
+    return cumulativeDifficulty;
 }
 int Block::getPositionAtLedger() {
     return positionAtLedger;
@@ -14,4 +17,5 @@ int Block::getPositionAtLedger() {
 Block *Block::getPreviousBlock() {
     return previousBlock;
 }
+
 

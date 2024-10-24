@@ -7,15 +7,16 @@ class BlockchainNetwork;
 
 class Block {
 public:
-    Block(long long, int, Block*);
-    int ttt;
+    Block(long long, int, long long, Block*); //Block hash, block position, cumulative difficulty, prev block 
     Block *getPreviousBlock();
     long long getBlockHash();
     int getPositionAtLedger();
+    long long getCumulativeDifficulty();
 
 private:
     long long blockHash = 0; 
     int positionAtLedger;
+    long long cumulativeDifficulty = 0;
     Block *previousBlock;
 
 };
@@ -37,6 +38,7 @@ public:
     long long lastUpdatedBlockPosition = 1; 
     long long difficulty;
     int id;
+    void generateNewBlock(long long);
 private:
     Block* latestBlock;
     std::mt19937 rndEngine;
@@ -55,11 +57,12 @@ public:
     void print_pool_update(int, int);
     void print_fork(int, int);
 
-    int difficultyUpdateInterval = 30; //denotes how often we update the difficulty of the nodes; its value x means we update after x, 2x, 3x, .. -th blocks are created
+    int difficultyUpdateInterval = 50; //denotes how often we update the difficulty of the nodes; its value x means we update after x, 2x, 3x, .. -th blocks are created
 
     long long expectedMineTime = 1000;
     long long curTime; // denotes the current time in the simulator
-    
+    static const int max_size = 50000;
+    std::stack<int> st[max_size];
 
 private:
     Block *genesisBlock;

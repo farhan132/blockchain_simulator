@@ -6,7 +6,7 @@ OBJS := $(OBJSTMP:.cpp=.o)
 $(BUILD_DIR)/main: $(OBJS)
 	g++ -std=c++17 $(OBJS) -o main
 $(BUILD_DIR)/%.o: %.cpp
-	g++ -c $< -o $@
+	g++ -std=c++17 -c $< -o $@
 .PHONY: clean
 clean:
 	find $(BUILD_DIR) -name '*.o' -delete
